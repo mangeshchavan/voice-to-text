@@ -31,17 +31,22 @@ The Assembly Project is a Django web application that allows users to upload aud
    cd <repository-directory>
    ```
 
-2. **Install Poetry** (if you haven't already):
+2. **Obtain your AssemblyAI API Key**:
+   - Visit [AssemblyAI's official website](https://www.assemblyai.com/).
+   - Sign up for a new account or log in if you already have one.
+   - Access your dashboard and find the section labeled "API Keys" to copy your API key.
+
+3. **Install Poetry** (if you haven't already):
 
    Follow the instructions on the [Poetry installation page](https://python-poetry.org/docs/#installation).
 
-3. **Install dependencies**:
+4. **Install dependencies**:
 
    ```bash
    poetry install
    ```
 
-4. **Set up environment variables**:
+5. **Set up environment variables**:
 
    Create a `.env` file in the root directory of the project and add your AssemblyAI API key:
 
@@ -49,19 +54,19 @@ The Assembly Project is a Django web application that allows users to upload aud
    ASSEMBLYAI_API_KEY=your_api_key_here
    ```
 
-5. **Run database migrations**:
+6. **Run database migrations**:
 
    ```bash
    poetry run python manage.py migrate
    ```
 
-6. **Run the development server**:
+7. **Run the development server**:
 
    ```bash
    poetry run python manage.py runserver
    ```
 
-7. **Access the application**:
+8. **Access the application**:
 
    Open your web browser and go to `http://127.0.0.1:8000/upload/` to start using the application.
 
