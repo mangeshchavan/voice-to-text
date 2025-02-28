@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Uploaded Files</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Uploaded Files</h1>
+        <ul class="list-group">
+            {% for file in files %}
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{{ file.file.url }}">{{ file.file.name }}</a> (uploaded at {{ file.uploaded_at }})
+                        <div>
+                            <form method="post" action="{% url 'convert' file.pk %}" style="display:inline;">
+                                {% csrf_token %}
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="language" id="language_en_{{ file.pk }}" value="en" checked>
+                                    <label class="form-check-label" for="language_en_{{ file.pk }}">English</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="language" id="language_hi_{{ file.pk }}" value="hi">
+                                    <label class="form-check-label" for="language_hi_{{ file.pk }}">Hindi</label>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm">Convert</button>
+                            </form>
+
+                            <form method="post" action="{% url 'delete_file' file.pk %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+
+                            <!-- {% if file.text %}
+                                <a href="{% url 'download_text' file.pk %}" class="btn btn-success btn-sm">Download Text</a>
+                            {% endif %} -->
+                        </div>
+                    </div>
+                    {% if file.text %}
+                        <div class="mt-2">
+                            <textarea class="form-control" id="transcript-{{ file.pk }}" rows="3" readonly>{{ file.text }}</textarea>
+                            <button class="btn btn-secondary btn-sm mt-2" onclick="copyText({{ file.pk }})">Copy Text</button>
+                        </div>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+        <a href="{% url 'upload_file' %}" class="btn btn-primary mt-4">Upload file</a>
+    </div>
+
+    <!-- Include Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <!-- Custom JS for copying text -->
+    <script>
+        function copyText(pk) {
+            var copyText = document.getElementById('transcript-' + pk);
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // For mobile devices
+            document.execCommand('copy');
+            alert('Text copied to clipboard');
+        }
+    </script>
+</body>
+</html>
