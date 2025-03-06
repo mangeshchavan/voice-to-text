@@ -50,7 +50,7 @@ def convert_audio_to_text(request, pk):
         punctuate=True,
         format_text=False,
     )
-    config.set_custom_spelling({"थॉटस": ["थार्स", "था"], "शुभेच्छा": ["शुभिक्षा"]})
+    config.set_custom_spelling({"थॉटस": ["थार्स"], "शुभेच्छा": ["शुभिक्षा"]})
     aai.settings.api_key = os.getenv("ASSEMBLYAI_API_KEY", "default_api_key")
     transcriber = aai.Transcriber(config=config)
     transcript = transcriber.transcribe(file.file.path)
