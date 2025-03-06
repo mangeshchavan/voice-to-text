@@ -8,8 +8,8 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from dotenv import load_dotenv
 
-from .forms import FileUploadForm
-from .models import UploadedFile
+from assembly.forms import FileUploadForm
+from assembly.models import UploadedFile
 
 
 load_dotenv()

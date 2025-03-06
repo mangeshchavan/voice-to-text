@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import UploadedFile
+from assembly.models import UploadedFile
 
 
 class FileUploadForm(forms.ModelForm):
