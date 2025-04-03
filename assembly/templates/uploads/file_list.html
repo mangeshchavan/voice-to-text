@@ -17,11 +17,11 @@
                             <form method="post" action="{% url 'convert' file.pk %}" style="display:inline;">
                                 {% csrf_token %}
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="language" id="language_en_{{ file.pk }}" value="en" checked>
+                                    <input class="form-check-input" type="radio" name="language" id="language_en_{{ file.pk }}" value="en" >
                                     <label class="form-check-label" for="language_en_{{ file.pk }}">English</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="language" id="language_hi_{{ file.pk }}" value="hi">
+                                    <input class="form-check-input" type="radio" name="language" id="language_hi_{{ file.pk }}" value="hi" checked>
                                     <label class="form-check-label" for="language_hi_{{ file.pk }}">Hindi</label>
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-sm">Convert</button>
@@ -40,7 +40,7 @@
                     {% if file.text %}
                         <div class="mt-2">
                             <textarea class="form-control" id="transcript-{{ file.pk }}" rows="3" readonly>{{ file.text }}</textarea>
-                            <button class="btn btn-secondary btn-sm mt-2" onclick="copyText({{ file.pk }})">Copy Text</button>
+                            <button class="btn btn-secondary btn-sm mt-2" onclick="copyText({{file.pk}})">Copy Text</button>
                         </div>
                     {% endif %}
                 </li>
