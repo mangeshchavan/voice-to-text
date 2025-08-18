@@ -49,20 +49,27 @@ def convert_audio_to_text(request, pk):
         language_code=language,
         punctuate=True,
         format_text=False,
+        speaker_labels=True,
     )
     config.set_custom_spelling({"थॉटस": ["थार्स"], "शुभेच्छा": ["शुभिक्षा"]})
     aai.settings.api_key = os.getenv("ASSEMBLYAI_API_KEY", "default_api_key")
     transcriber = aai.Transcriber(config=config)
     transcript = transcriber.transcribe(file.file.path)
+    utterances_list = []
+    for utterance in transcript.utterances:
+        utterance_text = f"Speaker {utterance.speaker}: {utterance.text}"
+        utterances_list.append(utterance_text)
 
-    # Save the transcription text to the UploadedFile model
+    file.text = "\n".join(utterances_list)
+
     file.text = transcript.text
     file.save()
     txt_file_path = os.path.join(
         settings.MEDIA_ROOT, f"{os.path.splitext(file.file.name)[0]}.txt"
     )
     with open(txt_file_path, "w") as f:
-        f.write(transcript.text)
+        # f.write(transcript.text)
+        f.write("\n".join(utterances_list))
     return redirect("file_list")
 
 
