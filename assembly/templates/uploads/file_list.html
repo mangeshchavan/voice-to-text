@@ -1,68 +1,213 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Uploaded Files</title>
-    <!-- Include Bootstrap CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container mt-5">
-        <h1 class="mb-4">Uploaded Files</h1>
-        <ul class="list-group">
+{% extends 'base.html' %}
+
+{% block title %}Uploaded Files - Voice to Text Converter{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4 page-header">
+            <h1 class="text-gradient">
+                <i class="bi bi-folder-fill me-3"></i>
+                Your Audio Files
+            </h1>
+            <a href="{% url 'upload_file' %}" class="btn btn-primary pulse">
+                <i class="bi bi-plus-circle me-2"></i>
+                Upload New File
+            </a>
+        </div>
+
+        {% if not files %}
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="bi bi-cloud-upload" style="font-size: 4rem; color: var(--primary-color);"></i>
+                </div>
+                <h3 class="text-muted mb-3">No files uploaded yet</h3>
+                <p class="text-muted mb-4">Upload your first audio file to get started with voice-to-text conversion</p>
+                <a href="{% url 'upload_file' %}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-cloud-upload me-2"></i>
+                    Upload Your First File
+                </a>
+            </div>
+        {% else %}
+            <div class="row">
             {% for file in files %}
-                <li class="list-group-item">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <a href="{{ file.file.url }}">{{ file.file.name }}</a> (uploaded at {{ file.uploaded_at }})
+                    <div class="col-12 mb-4">
+                        <div class="card file-item">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="bi bi-file-earmark-music-fill text-primary me-3" style="font-size: 2rem;"></i>
                         <div>
-                            <form method="post" action="{% url 'convert' file.pk %}" style="display:inline;">
+                                                <h5 class="card-title mb-1">
+                                                    <a href="{{ file.file.url }}" class="text-decoration-none" target="_blank">
+                                                        {{ file.file.name }}
+                                                    </a>
+                                                </h5>
+                                                <small class="text-muted">
+                                                    <i class="bi bi-calendar me-1"></i>
+                                                    Uploaded {{ file.uploaded_at|date:"d-m-Y H:i:s" }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="d-flex flex-wrap gap-2 justify-content-md-end align-items-center">
+                                            {% if not file.text %}
+                                                <!-- Language Selection and Convert Form -->
+                                                <form method="post" action="{% url 'convert' file.pk %}" class="d-flex align-items-center gap-2">
                                 {% csrf_token %}
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="language" id="language_en_{{ file.pk }}" value="en" >
-                                    <label class="form-check-label" for="language_en_{{ file.pk }}">English</label>
+                                                    <div class="language-selector d-flex gap-2">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" name="language" id="language_en_{{ file.pk }}" value="en">
+                                                            <label class="form-check-label small" for="language_en_{{ file.pk }}">
+                                                                <i class="bi bi-translate me-1"></i>English
+                                                            </label>
                                 </div>
-                                <div class="form-check form-check-inline">
+                                                        <div class="form-check">
                                     <input class="form-check-input" type="radio" name="language" id="language_hi_{{ file.pk }}" value="hi" checked>
-                                    <label class="form-check-label" for="language_hi_{{ file.pk }}">Hindi</label>
+                                                            <label class="form-check-label small" for="language_hi_{{ file.pk }}">
+                                                                <i class="bi bi-translate me-1"></i>Hindi
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary btn-sm">
+                                                        <i class="bi bi-play-circle me-1"></i>
+                                                        Convert
+                                                    </button>
+                                                </form>
+                                            {% else %}
+                                                <span class="badge bg-success fs-6 fw-normal">
+                                                    <i class="bi bi-check-circle me-1"></i>
+                                                    Converted
+                                                </span>
+                                            {% endif %}
+
+                                            <button type="button" class="btn btn-danger btn-sm"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#confirmDeleteModal"
+                                                    data-form-action="{% url 'delete_file' file.pk %}"
+                                                    data-file-name="{{ file.file.name|truncatechars:30 }}">
+                                                <i class="bi bi-trash me-1"></i>
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary btn-sm">Convert</button>
-                            </form>
 
-                            <form method="post" action="{% url 'delete_file' file.pk %}" style="display:inline;">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                            </form>
-
-                            <!-- {% if file.text %}
-                                <a href="{% url 'download_text' file.pk %}" class="btn btn-success btn-sm">Download Text</a>
-                            {% endif %} -->
+                                {% if file.text %}
+                                    <hr class="my-3">
+                                    <div class="transcript-section">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h6 class="text-muted mb-0">
+                                                <i class="bi bi-file-text me-2"></i>
+                                                Transcript
+                                            </h6>
+                                            <div class="btn-group" role="group">
+                                                <button class="btn btn-outline-secondary btn-sm" onclick="copyText({{ file.pk }})">
+                                                    <i class="bi bi-copy me-1"></i>
+                                                    Copy
+                                                </button>
+                                                <button class="btn btn-outline-secondary btn-sm" onclick="downloadText({{ file.pk }}, '{{ file.file.name }}')">
+                                                    <i class="bi bi-download me-1"></i>
+                                                    Download
+                                                </button>
+                                                <button class="btn btn-outline-secondary btn-sm" onclick="toggleTranscript({{ file.pk }})">
+                                                    <i class="bi bi-eye me-1"></i>
+                                                    <span id="toggle-text-{{ file.pk }}">Hide</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div id="transcript-container-{{ file.pk }}">
+                                            <textarea class="form-control" id="transcript-{{ file.pk }}" rows="4" readonly style="resize: vertical;">{{ file.text }}</textarea>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
-                    {% if file.text %}
-                        <div class="mt-2">
-                            <textarea class="form-control" id="transcript-{{ file.pk }}" rows="3" readonly>{{ file.text }}</textarea>
-                            <button class="btn btn-secondary btn-sm mt-2" onclick="copyText({{file.pk}})">Copy Text</button>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination would go here if needed -->
+            <div class="text-center mt-4">
+                <p class="text-muted">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Total files: {{ files|length }}
+                </p>
                         </div>
                     {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-        <a href="{% url 'upload_file' %}" class="btn btn-primary mt-4">Upload file</a>
     </div>
+</div>
+{% endblock %}
 
-    <!-- Include Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+{% block extra_js %}
+<script>
+    // Toggle transcript visibility
+    function toggleTranscript(pk) {
+        const container = document.getElementById(`transcript-container-${pk}`);
+        const toggleText = document.getElementById(`toggle-text-${pk}`);
+        const icon = toggleText.previousElementSibling;
 
-    <!-- Custom JS for copying text -->
-    <script>
-        function copyText(pk) {
-            var copyText = document.getElementById('transcript-' + pk);
-            copyText.select();
-            copyText.setSelectionRange(0, 99999); // For mobile devices
-            document.execCommand('copy');
-            alert('Text copied to clipboard');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            toggleText.textContent = 'Hide';
+            icon.className = 'bi bi-eye me-1';
+        } else {
+            container.style.display = 'none';
+            toggleText.textContent = 'Show';
+            icon.className = 'bi bi-eye-slash me-1';
+        }
+    }
+
+    // Download transcript as text file
+    function downloadText(pk, fileName) {
+        const text = document.getElementById(`transcript-${pk}`).value;
+        const blob = new Blob([text], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName.replace(/\.[^/.]+$/, '') + '_transcript.txt';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        showToast('Transcript downloaded successfully!', 'success');
+    }
+
+    // Auto-resize textareas
+    document.addEventListener('DOMContentLoaded', function() {
+        const textareas = document.querySelectorAll('textarea[id^="transcript-"]');
+        textareas.forEach(textarea => {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
+        });
+    });
+
+    // Add smooth animations to cards
+    document.addEventListener('DOMContentLoaded', function() {
+        const cards = document.querySelectorAll('.file-item');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+            card.classList.add('fade-in');
+        });
+    });
+
+    // Handle delete confirmation modal
+    const confirmDeleteModal = document.getElementById('confirmDeleteModal');
+    if (confirmDeleteModal) {
+        confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const formAction = button.getAttribute('data-form-action');
+            const fileName = button.getAttribute('data-file-name');
+
+            const modalForm = confirmDeleteModal.querySelector('#deleteForm');
+            const modalFileNameSpan = confirmDeleteModal.querySelector('#fileNameToDelete');
+
+            modalForm.action = formAction;
+            modalFileNameSpan.textContent = fileName;
+        });
         }
     </script>
-</body>
-</html>
+{% endblock %}

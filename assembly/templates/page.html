@@ -1,10 +1,163 @@
-<!DOCTYPE html>
-<html>
-<body>
+{% extends 'base.html' %}
 
-<h1>Happy Thoughts, </h1>
+{% block title %}Voice to Text Converter - AI-Powered Audio Transcription{% endblock %}
 
+{% block content %}
+<div class="text-center mb-5">
+    <div class="mb-4">
+        <i class="bi bi-mic-fill text-primary" style="font-size: 5rem;"></i>
+    </div>
+    <h1 class="display-4 text-gradient mb-3">
+        Voice to Text Converter
+    </h1>
+    <p class="lead text-muted mb-4">
+        Transform your audio files into accurate text transcriptions using advanced AI technology
+    </p>
+    <div class="d-flex justify-content-center gap-3">
+        <a href="{% url 'upload_file' %}" class="btn btn-primary btn-lg pulse">
+            <i class="bi bi-cloud-upload me-2"></i>
+            Start Converting
+        </a>
+        <a href="{% url 'file_list' %}" class="btn btn-outline-primary btn-lg">
+            <i class="bi bi-folder me-2"></i>
+            View Files
+        </a>
+    </div>
+</div>
 
+<!-- Features Section -->
+<div class="row mb-5">
+    <div class="col-md-4 text-center mb-4">
+        <div class="card h-100 border-0 bg-light">
+            <div class="card-body p-4">
+                <i class="bi bi-lightning-charge-fill text-warning mb-3" style="font-size: 3rem;"></i>
+                <h4 class="card-title">Fast & Accurate</h4>
+                <p class="card-text text-muted">
+                    Get high-quality transcriptions in seconds using state-of-the-art AI technology
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 text-center mb-4">
+        <div class="card h-100 border-0 bg-light">
+            <div class="card-body p-4">
+                <i class="bi bi-globe text-info mb-3" style="font-size: 3rem;"></i>
+                <h4 class="card-title">Multi-Language Support</h4>
+                <p class="card-text text-muted">
+                    Support for multiple languages including English and Hindi with more coming soon
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 text-center mb-4">
+        <div class="card h-100 border-0 bg-light">
+            <div class="card-body p-4">
+                <i class="bi bi-shield-check text-success mb-3" style="font-size: 3rem;"></i>
+                <h4 class="card-title">Secure & Private</h4>
+                <p class="card-text text-muted">
+                    Your audio files are processed securely and your privacy is our top priority
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
 
-</body>
-</html>
+<!-- How It Works -->
+<div class="row mb-5 how-it-works-steps">
+    <div class="col-12">
+        <h2 class="text-center text-gradient mb-4">How It Works</h2>
+        <div class="row">
+            <div class="col-md-3 text-center mb-3">
+                <div class="mb-3">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center"
+                         style="width: 60px; height: 60px;">
+                        <span class="h4 mb-0">1</span>
+                    </div>
+                </div>
+                <h5>Upload Audio</h5>
+                <p class="text-muted small">
+                    Upload your audio file in MP3, WAV, or other supported formats
+                </p>
+            </div>
+            <div class="col-md-3 text-center mb-3">
+                <div class="mb-3">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center"
+                         style="width: 60px; height: 60px;">
+                        <span class="h4 mb-0">2</span>
+                    </div>
+                </div>
+                <h5>Select Language</h5>
+                <p class="text-muted small">
+                    Choose the language of your audio for optimal transcription accuracy
+                </p>
+            </div>
+            <div class="col-md-3 text-center mb-3">
+                <div class="mb-3">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center"
+                         style="width: 60px; height: 60px;">
+                        <span class="h4 mb-0">3</span>
+                    </div>
+                </div>
+                <h5>AI Processing</h5>
+                <p class="text-muted small">
+                    Our advanced AI analyzes your audio and generates accurate text
+                </p>
+            </div>
+            <div class="col-md-3 text-center mb-3">
+                <div class="mb-3">
+                    <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center"
+                         style="width: 60px; height: 60px;">
+                        <span class="h4 mb-0">4</span>
+                    </div>
+                </div>
+                <h5>Download Text</h5>
+                <p class="text-muted small">
+                    Copy, edit, or download your transcript in various formats
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Supported Formats -->
+<div class="bg-light rounded p-4 text-center">
+    <h5 class="mb-3">Supported Audio Formats</h5>
+    <div class="d-flex justify-content-center flex-wrap gap-3">
+        <span class="badge bg-primary">MP3</span>
+        <span class="badge bg-primary">WAV</span>
+        <span class="badge bg-primary">M4A</span>
+        <span class="badge bg-primary">FLAC</span>
+        <span class="badge bg-primary">AAC</span>
+        <span class="badge bg-primary">OGG</span>
+    </div>
+    <p class="text-muted mt-3 mb-0 small">
+        Maximum file size: 100MB | Processing time: Usually under 1 minute
+    </p>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add smooth animations to feature cards
+        const cards = document.querySelectorAll('.card');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.2}s`;
+            card.classList.add('fade-in');
+        });
+
+        // Add hover effects to step circles
+        const stepCircles = document.querySelectorAll('.rounded-circle');
+        stepCircles.forEach(circle => {
+            circle.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.1)';
+                this.style.transition = 'transform 0.3s ease';
+            });
+
+            circle.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+    });
+</script>
+{% endblock %}
